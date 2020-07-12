@@ -110,7 +110,7 @@ def uploadFileToServer(thing_id, cell_id, memriseEditURL, filename, jar):
     if not r.status_code == requests.codes.ok:
         print("Result code: %d" % r.status_code)
 
-def uploadAudio(revision, course, debug, headwordcol, filenamecol, audiocol, gttslang, filedir, source, emptycheck):
+def uploadAudio(revision, course, debug, phrasecol, filenamecol, audiocol, gttslang, filedir, source, emptycheck):
     jar = CookiesJar()
     
     print("Opening base URL: %s" % (MEMRISE_ENDPOINT + course))
@@ -152,7 +152,7 @@ def uploadAudio(revision, course, debug, headwordcol, filenamecol, audiocol, gtt
         # 1 - English word
         # 3 - Audios
         
-        word = soup.find(attrs={"data-cell-type": "column", "data-key": headwordcol }).find(attrs={"class": "text"}).get_text().strip()
+        word = soup.find(attrs={"data-cell-type": "column", "data-key": phrasecol }).find(attrs={"class": "text"}).get_text().strip()
         filename = soup.find(attrs={"data-cell-type": "column", "data-key": filenamecol }).find(attrs={"class": "text"}).get_text().strip()
         
         audioFilename = os.path.join(filedir, filename + ".mp3")
@@ -183,7 +183,8 @@ def uploadAudio(revision, course, debug, headwordcol, filenamecol, audiocol, gtt
             total += 1
             print(str(total) + ": " + audioFilename )
         
-    print("Total number: %d" % total)
+    print("Total number downloaded: %d" % saved)
+    print("Total number uploaded: %d" % total)
             
 def usage(parser):
     parser.print_help()
@@ -194,7 +195,7 @@ def main():
     parser.add_argument('-revision', type=int, help="Revision to output. Not specfied (default): last, 0 - all", default="-1")
     parser.add_argument('-course', help="Memrise course ID", default="5708953")    
     parser.add_argument('-debug', action='store_true', help="Enable debug ", default=False)    
-    parser.add_argument('-headwordcol', help="Headword column", default="3")
+    parser.add_argument('-phrasecol', help="Headword column", default="3")
     parser.add_argument('-filenamecol', help="Filename column", default="2")
     parser.add_argument('-audiocol', help="Audio column", default="6")    
     parser.add_argument('-gttslang', help="Gtts lang", default="zh-cn")
@@ -208,7 +209,7 @@ def main():
         args.revision,
         args.course,
         args.debug,
-        args.headwordcol,
+        args.phrasecol,
         args.filenamecol,
         args.audiocol,
         args.gttslang,
